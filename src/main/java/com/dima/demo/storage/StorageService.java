@@ -2,15 +2,14 @@ package com.dima.demo.storage;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,16 +21,34 @@ public class StorageService {
 
     @Value("${application.bucket.name}")
     private String bucketName;
+    private final StorageRepository storageRepository;
 
-    @Autowired
-    private AmazonS3 s3Client;
+    private final AmazonS3 s3Client;
 
-    public String uploadFile(MultipartFile file) {
-        File fileObj = convertMultiPartFileToFile(file);
+    public StorageService(StorageRepository storageRepository, AmazonS3 s3Client) {
+        this.storageRepository = storageRepository;
+        this.s3Client = s3Client;
+    }
+
+    public Storage uploadFile(MultipartFile file) {
+        file.getContentType();
+        System.out.println(file.getSize());
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        PutObjectResult response = s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
+        File fileObj = convertMultiPartFileToFile(file);
+
+        s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
+        String serverBaseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+        Storage storageFile = new Storage(
+                file.getOriginalFilename(),
+                fileName,
+                file.getContentType(),
+                serverBaseUrl+"/api/v1/file/download/"+fileName,
+                serverBaseUrl+"/api/v1/file/download/"+fileName,
+                file.getSize()
+                );
+        storageRepository.save(storageFile);
         fileObj.delete();
-        return "File uploaded : " + fileName;
+        return storageFile;
     }
 
 

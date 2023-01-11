@@ -37,11 +37,17 @@ public class CustomOAuth2User implements OAuth2User {
     }
 
     public String getFirstName() {
-        //TODO de vazut pentru facebook pentru ca e diferit
-        return oauth2User.<String>getAttribute("given_name");
+        if(provider == Provider.FACEBOOK){
+            return oauth2User.getAttribute("first_name");
+        }
+        return oauth2User.getAttribute("given_name");
     }
     public String getLastName() {
-        return oauth2User.<String>getAttribute("family_name");
+        if(provider == Provider.FACEBOOK){
+            return oauth2User.getAttribute("last_name");
+        }
+
+        return oauth2User.getAttribute("family_name");
     }
 
     public Provider getOauth2ClientName() {
