@@ -1,14 +1,15 @@
 package com.dima.demo.user;
 
 import com.dima.demo.authentication.Provider;
+import com.dima.demo.message.Message;
+import com.dima.demo.storage.Storage;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 @Data
 @Builder
@@ -30,6 +31,9 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Provider provider;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Storage profileImage;
     private Boolean isLocked;
     private Boolean isEnabled;
 

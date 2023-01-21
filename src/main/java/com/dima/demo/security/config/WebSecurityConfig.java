@@ -41,7 +41,6 @@ public class WebSecurityConfig {
     private final UserService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtAthFilter jwtAthFilter ;
-    private final JwtUtils jwtUtils;
     private final CustomOAuth2UserService oauthUserService;
 
     private final OAuthLoginSuccessHandler oauthLoginSuccessHandler;
@@ -53,10 +52,17 @@ public class WebSecurityConfig {
                 .and()
                 .csrf()
                 .disable()
+                .requiresChannel(channel->channel.anyRequest().requiresSecure())
                 .authorizeHttpRequests((requests) -> {
                             try {
                                 requests
-                                        .requestMatchers("/api/v*/registration/**","/api/v*/auth/**","/oauth/**","/api/v*/file/**").permitAll()
+                                        .requestMatchers(
+                                                "/api/v*/registration/**",
+                                                "/api/v*/auth/**",
+                                                "/oauth/**",
+                                                "/api/v*/file/**",
+                                                "/ws/**"
+                                        ).permitAll()
                                         .anyRequest()
                                         .authenticated().and()
                                         .formLogin();
@@ -80,20 +86,6 @@ public class WebSecurityConfig {
                 .httpBasic();
         return http.build();
 
-        //        http
-//                .csrf().disable()
-//                .authorizeHttpRequests((requests) -> {
-//                            try {
-//                                requests
-//                                        .requestMatchers("/api/v*/registration/**").permitAll()
-//                                        .anyRequest()
-//                                        .authenticated().and()
-//                                        .formLogin();
-//                            } catch (Exception e) {
-//                                throw new RuntimeException(e);
-//                            }
-//                        }
-//                ).authenticationProvider(daoAuthenticationProvider());
     }
     @Bean
     public AuthenticationProvider authenticationProvider(){

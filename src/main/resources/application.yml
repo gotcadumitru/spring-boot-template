@@ -1,4 +1,9 @@
 server:
+  ssl:
+    key-store: ${SSL_KEY_STORE_NAME}
+    key-store-password: ${SSL_KEY_STORE_PASSWORD}
+    key-store-type: ${SSL_KEY_STORE_TYPE}
+    key-alias: ${SSL_KEY_ALIAS}
   error:
     include-message: always
     include-binding-errors: always
@@ -11,7 +16,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
