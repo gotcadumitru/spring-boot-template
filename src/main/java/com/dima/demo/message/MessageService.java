@@ -17,7 +17,10 @@ public class MessageService {
     private final UserRepository userRepository;
     public Message createNewMessage(MessageCreateRequest messageCreateRequest) {
         User sender = userRepository.findById(messageCreateRequest.senderId()).orElseThrow(()-> new ApiRequestException("Sender not found"));
-        User receiver = userRepository.findById(messageCreateRequest.receiverId()).orElseThrow(()-> new ApiRequestException("Sender not found"));
+        User receiver = null;
+        if(messageCreateRequest.receiverId()!=null) {
+            receiver= userRepository.findById(messageCreateRequest.receiverId()).orElseThrow(() -> new ApiRequestException("Sender not found"));
+        }
         Message newMessage =  messageRepository.save(new Message(
                 sender,
                 receiver,
@@ -54,5 +57,9 @@ public class MessageService {
 
     public void setMessagesToBeRead(List<Long> messagesId) {
         messageRepository.updateMessagesToBeRead(messagesId);
+    }
+
+    public List<Message> getAllMessages() {
+        return messageRepository.findAll();
     }
 }

@@ -99,4 +99,11 @@ public class UserService implements UserDetailsService {
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
+
+    public User getByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(()->new ApiRequestException("User not found, cho za nah?"));
+    }
+    public List<User> getUsersByEmail(List<String> emails) {
+        return userRepository.findAllByEmailIn(emails);
+    }
 }

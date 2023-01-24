@@ -1,4 +1,4 @@
-package com.dima.demo.security.config;
+package com.dima.demo.websocket.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;

@@ -1,5 +1,6 @@
-package com.dima.demo.security.config;
+package com.dima.demo.websocket.config;
 
+import com.dima.demo.security.config.AuthChannelInterceptorAdapter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
